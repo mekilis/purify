@@ -10,7 +10,7 @@ func main() {
 func Clean(chatterBox *chatterbox.ChatterBox, wordsSlice []string) (int, int) {
 	var goodWords, badWords int
 	for i, word := range wordsSlice {
-		if chatterBox.BadWords.FindWord(word) {
+		if chatterBox.BadWords.Find(word) {
 			w := string(word[0])
 			k := len(word)
 			for j := 2; j < k; j++ {

@@ -44,7 +44,7 @@ func TestFindWord(t *testing.T) {
 			trie.AddWord("smart")
 		}
 
-		got := trie.FindWord(tt.in)
+		got := trie.Find(tt.in)
 		if got != tt.want {
 			t.Errorf("FindWord(...): got %v, wanted %v", got, tt.want)
 		}
@@ -58,14 +58,14 @@ func BenchmarkAddWord(b *testing.B) {
 	}
 }
 
-func BenchmarkFindWord_NotExist(b *testing.B) {
+func BenchmarkFind_NotExist(b *testing.B) {
 	trie := NewTrie()
 	for i := 0; i < b.N; i++ {
-		trie.FindWord("word")
+		trie.Find("word")
 	}
 }
 
-func BenchmarkFindWord_ItExists(b *testing.B) {
+func BenchmarkFind_ItExists(b *testing.B) {
 	trie := NewTrie()
 
 	b.StopTimer()
@@ -75,6 +75,6 @@ func BenchmarkFindWord_ItExists(b *testing.B) {
 
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		trie.FindWord("word")
+		trie.Find("word")
 	}
 }

@@ -7,7 +7,7 @@ import (
 )
 
 // Dict implements a quasi hash map
-type Dict map[string]*Trie
+type Dict map[rune]*Trie
 
 const pathToBadWords = "/mnt/data/purify/bad.txt"
 
@@ -36,10 +36,10 @@ func ParseDictionary(path ...string) ([]string, error) {
 		words = append(words, scanner.Text())
 	}
 
-	// if err := scanner.Err(); err != nil {
-	// 	// log.Printf("%v", err)
-	// 	return words, err
-	// }
+	if err := scanner.Err(); err != nil {
+		// log.Printf("%v", err)
+		return words, err
+	}
 
 	return words, nil
 }
