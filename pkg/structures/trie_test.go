@@ -1,6 +1,8 @@
 package structures
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestAddWord(t *testing.T) {
 	tests := []struct {
@@ -46,5 +48,33 @@ func TestFindWord(t *testing.T) {
 		if got != tt.want {
 			t.Errorf("FindWord(...): got %v, wanted %v", got, tt.want)
 		}
+	}
+}
+
+func BenchmarkAddWord(b *testing.B) {
+	trie := NewTrie()
+	for i := 0; i < b.N; i++ {
+		trie.AddWord("word")
+	}
+}
+
+func BenchmarkFindWord_NotExist(b *testing.B) {
+	trie := NewTrie()
+	for i := 0; i < b.N; i++ {
+		trie.FindWord("word")
+	}
+}
+
+func BenchmarkFindWord_ItExists(b *testing.B) {
+	trie := NewTrie()
+
+	b.StopTimer()
+	for i := 0; i < b.N; i++ {
+		trie.AddWord("word")
+	}
+
+	b.StartTimer()
+	for i := 0; i < b.N; i++ {
+		trie.FindWord("word")
 	}
 }
