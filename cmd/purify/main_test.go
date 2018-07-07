@@ -7,29 +7,24 @@ import (
 	"github.com/mekilis/purify/pkg/chatterbox"
 )
 
-func BenchmarkClean_Normal(b *testing.B) {
-	// fmt.Printf("sample size: %d ", b.N)
+func BenchmarkClean(b *testing.B) {
+	cases := []struct {
+		Name      string
+		VocabSize int
+	}{
+		{"Normal", -1},
+		{"ExcessivelyVulgar", 10},
+	}
 
-	randomUser := chatterbox.New(false)
-	randomUser.NumberOfWords += b.N
-
-	words := randomUser.Rant()
-	wordsSlice := strings.Split(words, " ")
-
-	_, _ = Clean(randomUser, wordsSlice)
-	// fmt.Printf("\ngood words: %d\t\t\tbad words: %d", goodWords, badWords)
-}
-
-func BenchmarkClean_Excessive(b *testing.B) {
-	// fmt.Printf("sample size: %d ", b.N)
-
-	randomUser := chatterbox.New(false)
-	randomUser.NumberOfWords = b.N
-	randomUser.VocabularySize = 10 //bad words are in the range 0-100
-
-	words := randomUser.Rant()
-	wordsSlice := strings.Split(words, " ")
-
-	_, _ = Clean(randomUser, wordsSlice)
-	// fmt.Printf("good words: %d\t\t\tbad words: %d", goodWords, badWords)
+	for _, c := range cases {
+		b.Run(c.Name, func(b *testing.B) {
+			randomUser := chatterbox.New(false)
+			if c.VocabSize != -1 {
+				randomUser.VocabularySize = c.VocabSize
+			}
+			randomUser.NumberOfWords += b.N
+			words := strings.Split(randomUser.Rant(), " ")
+			Clean(randomUser, words)
+		})
+	}
 }
