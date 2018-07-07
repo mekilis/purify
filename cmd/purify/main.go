@@ -18,14 +18,19 @@ import (
 )
 
 const (
-	Port           = "9002"
+	// Port specifies the port to run on
+	Port = "9002"
+	// InvalidRequest puts 400 status code in English
 	InvalidRequest = "invalid request body"
 )
 
+// Request implements a basic request structure comprising
+// only the message to clean
 type Request struct {
 	Message string `json:"message"`
 }
 
+// Response implements a JSON structure to parse to the client
 type Response struct {
 	StatusCode int    `json:"status_code"`
 	Status     string `json:"status"`
@@ -35,6 +40,7 @@ type Response struct {
 func main() {
 	color.Set(color.FgYellow)
 	log.Print("Starting purify...\t")
+
 	badWords, err := structures.ParseDictionary()
 	if err != nil {
 		log.Fatal(err)
@@ -44,7 +50,9 @@ func main() {
 	color.Set(color.FgRed)
 	log.Print("Setting up trie...\t")
 	color.Unset()
+
 	trie := structures.NewTrie()
+
 	for _, word := range badWords {
 		err = trie.AddWord(word)
 		if err != nil {
@@ -68,7 +76,7 @@ func main() {
 	start(trie)
 }
 
-func root(t *structures.Trie) http.HandlerFunc {
+func rootHandler(t *structures.Trie) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var request Request
 		var response = Response{
@@ -76,7 +84,10 @@ func root(t *structures.Trie) http.HandlerFunc {
 			Status:     InvalidRequest,
 			Message:    "",
 		}
+
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Connection", "open")
+
 		err := json.NewDecoder(r.Body).Decode(&request)
 		if err != nil || request.Message == "" {
 			w.WriteHeader(http.StatusBadRequest)
@@ -106,10 +117,10 @@ func root(t *structures.Trie) http.HandlerFunc {
 
 func start(t *structures.Trie) {
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+	// r.Use(middleware.Logger)
 	r.Use(middleware.Timeout(20 * time.Second))
 
-	r.Post("/", root(t))
+	r.Post("/", rootHandler(t))
 
 	color.Set(color.FgGreen)
 	log.Printf("Listening on port: %s\n", Port)

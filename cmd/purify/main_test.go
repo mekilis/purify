@@ -1,23 +1,82 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/mekilis/purify/pkg/chatterbox"
+	"github.com/mekilis/purify/pkg/structures"
 )
 
 func TestMain(m *testing.M) {
 	flag.Parse()
-	i := m.Run()
-	fmt.Print(i)
-	os.Exit(i)
+	if testing.Short() {
+		fmt.Println("short test")
+		os.Exit(m.Run())
+	}
+
+	fmt.Println("long test")
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatalln("working directory could not be accessed", err)
+	}
+	dir = filepath.Join(dir, "purify")
+
+	build := exec.Command("go", "build", "-o", dir)
+	o, err := build.CombinedOutput()
+	if err != nil {
+		log.Fatalln(err, string(o))
+	}
+
+	time.Sleep(2 * time.Second)
+	os.Remove(dir)
+	os.Exit(0)
 }
 
-func TestStart(t *testing.T) {
+func TestRootHandler(t *testing.T) {
+	trie := structures.NewTrie()
+	got := rootHandler(trie)
+	if got == nil {
+		t.Errorf("handler cannot be nil")
+	}
+}
+
+func BenchmarkMain(b *testing.B) {
+	url := "http://localhost:" + Port
+	chatterBox := chatterbox.New(false)
+	var json []byte
+	var request = new(http.Request)
+	var response = new(http.Response)
+	var err error
+	client := &http.Client{
+		Timeout: 20 * time.Second,
+	}
+
+	for i := 0; i < b.N; i++ {
+		json = []byte(fmt.Sprintf("{\"message\": \"%s\"}", chatterBox.Rant()))
+		request, err = http.NewRequest("POST", url, bytes.NewBuffer(json))
+		if err != nil {
+			// log.Println("failed to generate request", err)
+			continue
+		}
+		request.Header.Set("Content-Type", "application/json")
+
+		response, err = client.Do(request)
+		if err != nil {
+			// log.Println("failed to do request", err)
+			continue
+		}
+		response.Body.Close()
+	}
 }
 
 func BenchmarkClean(b *testing.B) {
