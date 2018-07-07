@@ -2,62 +2,73 @@ package structures
 
 import (
 	"errors"
-	"fmt"
 )
 
 var (
 	//ErrTypeAssert returns type assert errors
 	ErrTypeAssert = errors.New("casting error")
+
+	// ErrDuplicateWord returns a soft error indicating a word's duplicate status
+	ErrDuplicateWord = errors.New("word already exist")
 )
 
 // Trie implements the data structure of same name
 type Trie struct {
-	End  string
-	Dict map[string]interface{}
+	End      bool
+	Children Dict
 }
 
 // TODO: Use int instead of string as keys
 
 // NewTrie returns a new Trie object
-func NewTrie(words []string) (*Trie, error) {
-	trie := &Trie{
-		End:  "*",
-		Dict: make(map[string]interface{}),
+func NewTrie() *Trie {
+	return &Trie{
+		End:      false,
+		Children: make(Dict),
 	}
-
-	for _, word := range words {
-		for _, c := range word {
-			ch := string(c)
-			//TODO: Stuck
-			fmt.Print(ch)
-		}
-		trie.Dict[trie.End] = trie.End
-	}
-	return trie, nil
 }
 
-// FindWord returns the true if word exists in the word map or false otherwise
-func (t *Trie) FindWord(word string) (bool, error) {
-	trie := t.Dict
-	fmt.Println("trie 1", trie)
+// FindWord returns true if a given word exists in the word map or false otherwise
+func (t *Trie) FindWord(word string) bool {
+	subTrie := t
 	for _, c := range word {
 		ch := string(c)
 
-		dict, ok := t.Dict[ch]
+		child, ok := subTrie.Children[ch]
 		if !ok {
-			return false, nil // not found
+			return false // not found
 		}
 
-		// fetch inner map
-		innerDict, ok := dict.(map[string]interface{})
+		subTrie = child
+	}
+
+	return subTrie.End
+}
+
+// AddWord adds a new distinct word to the trie
+func (t *Trie) AddWord(word string) error {
+	if ok := t.FindWord(word); ok {
+		return ErrDuplicateWord
+	}
+
+	subTrie := t
+	for _, r := range word {
+		ch := string(r)
+		child, ok := subTrie.Children[ch]
 		if ok {
-			trie = innerDict
+			subTrie = child
 		} else {
-			return false, ErrTypeAssert
+			child = new(Trie)
+			child.Children = make(Dict)
+			subTrie.Children[ch] = child
+			subTrie = child
 		}
 	}
 
-	fmt.Println("trie 2", trie)
-	_, ok := trie[t.End]
-	return ok, nil
+	// subTrie.Children[t.End] = t.End // use a boolean instead of an interface
+	if !subTrie.End {
+		subTrie.End = true
+	}
+
+	return nil
 }

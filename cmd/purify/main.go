@@ -7,10 +7,10 @@ import (
 )
 
 func main() {
-	words := make([]string, 0)
-	words = append(words, "boy")
-	trie, err := structures.NewTrie(words)
-	fmt.Println(trie, err)
-	// fmt.Println(trie.FindWord("boy"))
-	// fmt.Println(trie.FindWord("by"))
+	trie := structures.NewTrie()
+	fmt.Println(trie)
+	fmt.Println(trie.FindWord("boy"))
+	fmt.Println(trie.AddWord("boy"))
+	fmt.Println(trie.FindWord("boy"))
+	fmt.Println(trie.AddWord("boy"))
 }
