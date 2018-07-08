@@ -7,7 +7,10 @@ import (
 )
 
 // Dict implements a quasi hash map
-type Dict map[rune]*Trie
+type Dict struct {
+	Key   rune
+	Value *Trie
+}
 
 const pathToBadWords = "/mnt/data/purify/bad.txt"
 

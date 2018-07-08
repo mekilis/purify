@@ -12,14 +12,14 @@ var (
 // Trie implements the data structure of same name
 type Trie struct {
 	End        bool
-	ChildTries Dict
+	ChildTries []Dict
 }
 
 // NewTrie returns a new Trie object
 func NewTrie() *Trie {
 	return &Trie{
 		End:        false,
-		ChildTries: make(Dict),
+		ChildTries: make([]Dict, 0),
 	}
 }
 
@@ -27,7 +27,7 @@ func NewTrie() *Trie {
 func (t *Trie) Find(word string) bool {
 	subTrie := t
 	for _, r := range word {
-		trie, ok := subTrie.ChildTries[r]
+		trie, ok := subTrie.value(r)
 		if !ok {
 			return false // not found
 		}
@@ -46,11 +46,14 @@ func (t *Trie) AddWord(word string) error {
 
 	subTrie := t
 	for _, r := range word {
-		trie, ok := subTrie.ChildTries[r]
+		trie, ok := subTrie.value(r)
 		if !ok {
 			trie = new(Trie)
-			trie.ChildTries = make(Dict)
-			subTrie.ChildTries[r] = trie
+			trie.ChildTries = make([]Dict, 0)
+			subTrie.ChildTries = append(subTrie.ChildTries, Dict{
+				Key:   r,
+				Value: trie,
+			})
 		}
 		subTrie = trie
 	}
@@ -60,4 +63,13 @@ func (t *Trie) AddWord(word string) error {
 	}
 
 	return nil
+}
+
+func (t *Trie) value(r rune) (*Trie, bool) {
+	for _, child := range t.ChildTries {
+		if child.Key == r {
+			return child.Value, true
+		}
+	}
+	return nil, false
 }
