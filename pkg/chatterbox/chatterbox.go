@@ -27,7 +27,7 @@ func New(clean bool) *ChatterBox {
 	badWordsTrie := structures.NewTrie()
 	words, err := structures.ParseDictionary(pathToSystemDictionary)
 	if err != nil {
-		log.Fatal("an error occurred initiating test:", err)
+		log.Fatal("an error occurred while parsing dictionary:", err)
 	}
 
 	if !clean {
