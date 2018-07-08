@@ -16,13 +16,13 @@ time go test -bench=BenchmarkMain
 goos: linux
 goarch: amd64
 pkg: github.com/mekilis/purify/cmd/purify
-BenchmarkMain-4   	   20000	     64510 ns/op
+BenchmarkMain-4   	   10000	   1828116 ns/op
 PASS
-ok  	github.com/mekilis/purify/cmd/purify	1.995s
+ok  	github.com/mekilis/purify/cmd/purify	19.059s
 
-real	0m2.444s
-user	0m2.414s
-sys	0m0.938s
+real	0m19.592s
+user	0m3.547s
+sys	0m16.935s
 ```
 
 #### Setting the benchmark time to 10 seconds
@@ -32,15 +32,14 @@ time go test -bench=BenchmarkMain -benchtime=10s
 ```
 
 ```bash
-Main -benchtime 10s
 goos: linux
 goarch: amd64
 pkg: github.com/mekilis/purify/cmd/purify
-BenchmarkMain-4   	  200000	     63687 ns/op
+BenchmarkMain-4   	  100000	   2100485 ns/op
 PASS
-ok  	github.com/mekilis/purify/cmd/purify	13.490s
+ok  	github.com/mekilis/purify/cmd/purify	212.389s
 
-real	0m14.010s
-user	0m13.097s
-sys	0m5.737s
+real	3m32.907s
+user	0m22.942s
+sys	3m14.752s
 ```
