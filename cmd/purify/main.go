@@ -97,12 +97,14 @@ func rootHandler(t *structures.Trie) http.HandlerFunc {
 
 		wordsSlice := strings.Split(request.Message, " ")
 		for i, word := range wordsSlice {
+			tempWord := word
+			word = strings.ToLower(word)
 			if t.Find(word) {
-				w, k := string(word[0]), len(word)
+				w, k := string(tempWord[0]), len(word)
 				for j := 2; j < k; j++ {
 					w += "*"
 				}
-				w += string(word[k-1])
+				w += string(tempWord[k-1])
 				wordsSlice[i] = w
 			}
 		}
