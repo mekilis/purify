@@ -51,7 +51,7 @@ func TestRootHandler(t *testing.T) {
 }
 
 func BenchmarkMain(b *testing.B) {
-	url := "http://localhost:" + Port
+	url := fmt.Sprintf("http://localhost:%d", *optPortNumber)
 	chatterBox := chatterbox.New(false)
 	var json []byte
 	var request = new(http.Request)

@@ -15,14 +15,40 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/mekilis/purify/pkg/purifyutil"
 	"github.com/mekilis/purify/pkg/structures"
+	"github.com/pborman/getopt"
+)
+
+var (
+	optPortNumber     *int
+	optHelp           *bool
+	optCurrentVersion *bool
 )
 
 const (
-	// Port specifies the port to run on
-	Port = "9002"
 	// InvalidRequest puts 400 status code in English
 	InvalidRequest = "invalid request body"
+	// CurrentVersion at the moment
+	CurrentVersion = "0.1"
 )
+
+func init() {
+	const (
+		// Port specifies the port to run on
+		Port = 9002
+	)
+
+	optPortNumber = getopt.IntLong("port", 'p', Port, "port number to run on")
+	optCurrentVersion = getopt.BoolLong("version", 'v', "prints current version of Purify")
+	optHelp = getopt.BoolLong("help", 'h', "show help")
+	getopt.SetUsage(func() {
+		fmt.Println("Purify server: A minimalistic word filter based on Go." +
+			"\nUsage: ./purify [<flags>]" +
+			"\nFlags:" +
+			"\t ./purify -p (or --port) 9002" +
+			"\t ./purify -v (or --version)" +
+			"\t ./purify -h (or --help)")
+	})
+}
 
 // Request implements a basic request structure comprising
 // only the message to clean
@@ -38,6 +64,17 @@ type Response struct {
 }
 
 func main() {
+	getopt.Parse()
+	if *optCurrentVersion {
+		fmt.Println("purify version", CurrentVersion)
+		os.Exit(0)
+	}
+
+	if *optHelp {
+		getopt.Usage()
+		os.Exit(0)
+	}
+
 	color.Set(color.FgYellow)
 	log.Print("Starting purify...\t")
 
@@ -111,8 +148,8 @@ func start(t *structures.Trie) {
 	r.Post("/", rootHandler(t))
 
 	color.Set(color.FgGreen)
-	log.Printf("Listening on port: %s\n", Port)
+	log.Printf("Listening on port: %d\n", *optPortNumber)
 	color.Unset()
 
-	log.Fatal(http.ListenAndServe(":"+Port, r))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *optPortNumber), r))
 }
