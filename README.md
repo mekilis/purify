@@ -37,7 +37,7 @@ $ purify --port 12345
 ```
 
 Then a message is sent via `POST` method to the root endpoint
-`http:localhost:9002`.
+`http://localhost:9002`.
 
 #### Example
 
