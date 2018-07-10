@@ -14,7 +14,7 @@ Purify would automatically be installed at the already defined `$GOPATH` for the
 current user. Otherwise use the `go` tool to build and run at any other desired
 location.
 
-#### Usage
+### Usage
 
 The service can be started via a terminal:
 
@@ -34,6 +34,27 @@ example:
 
 ```bash
 $ purify --port 12345
+```
+
+Then a message is sent via `POST` method to the root endpoint
+`http:localhost:9002`.
+
+#### Example
+
+Request:
+```json
+{
+	"message": "sh!t"
+}
+```
+Response:
+
+```json
+{
+    "status_code": 1,
+    "status": "successfully filtered",
+    "message": "s**t"
+}
 ```
 
 
