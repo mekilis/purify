@@ -7,13 +7,13 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 
 	"github.com/fatih/color"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/mekilis/purify/pkg/purifyutil"
 	"github.com/mekilis/purify/pkg/structures"
 )
 
@@ -95,21 +95,7 @@ func rootHandler(t *structures.Trie) http.HandlerFunc {
 			return
 		}
 
-		wordsSlice := strings.Split(request.Message, " ")
-		for i, word := range wordsSlice {
-			tempWord := word
-			word = strings.ToLower(word)
-			if t.Find(word) {
-				w, k := string(tempWord[0]), len(word)
-				for j := 2; j < k; j++ {
-					w += "*"
-				}
-				w += string(tempWord[k-1])
-				wordsSlice[i] = w
-			}
-		}
-
-		response.Message = strings.Join(wordsSlice, " ")
+		response.Message = purifyutil.Clean(t, request.Message)
 		response.StatusCode = 1
 		response.Status = "successfully filtered"
 		w.WriteHeader(http.StatusOK)
