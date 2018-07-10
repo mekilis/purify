@@ -14,7 +14,7 @@ Purify would automatically be installed at the already defined `$GOPATH` for the
 current user. Otherwise use the `go` tool to build and run at any other desired
 location.
 
- #### Usage
+#### Usage
 
 The service can be started via a terminal:
 
