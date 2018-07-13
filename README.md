@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/mekilis/purify.svg?branch=master)](https://travis-ci.com/mekilis/purify)
+
 # Purify
 
 This is a simple profanity filter API written in `Go`. The API automatically
@@ -29,7 +31,7 @@ $ /path/to/purify
 ```
 
 depending on the mode of installation. By default, the server runs on port
-`:9002`. This can be changes by passing the `-p` or `--port` argument, for
+`:9002`. This can be changed by passing the `-p` or `--port` argument, for
 example:
 
 ```bash
