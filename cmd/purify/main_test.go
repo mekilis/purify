@@ -13,8 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/mekilis/purify/pkg/chatterbox"
-	"github.com/mekilis/purify/pkg/structures"
+	"github.com/mekilis/purify"
 )
 
 func TestMain(m *testing.M) {
@@ -43,7 +42,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestRootHandler(t *testing.T) {
-	trie := structures.NewTrie()
+	trie := purify.NewTrie()
 	got := rootHandler(trie)
 	if got == nil {
 		t.Errorf("handler cannot be nil")
@@ -52,7 +51,7 @@ func TestRootHandler(t *testing.T) {
 
 func BenchmarkMain(b *testing.B) {
 	url := fmt.Sprintf("http://localhost:%d", *optPortNumber)
-	chatterBox := chatterbox.New(false)
+	chatterBox := purify.NewChatterbox(false)
 	var json []byte
 	var request = new(http.Request)
 	var response = new(http.Response)
@@ -90,7 +89,7 @@ func BenchmarkClean(b *testing.B) {
 
 	for _, c := range cases {
 		b.Run(c.Name, func(b *testing.B) {
-			randomUser := chatterbox.New(false)
+			randomUser := purify.NewChatterbox(false)
 			if c.VocabSize != -1 {
 				randomUser.VocabularySize = c.VocabSize
 			}
@@ -103,7 +102,7 @@ func BenchmarkClean(b *testing.B) {
 
 // Clean does the actual job of filtering a given string of possible profane
 // words (testing only)
-func Clean(chatterBox *chatterbox.ChatterBox, wordsSlice []string) (int, int) {
+func Clean(chatterBox *purify.ChatterBox, wordsSlice []string) (int, int) {
 	var goodWords, badWords int
 	for i, word := range wordsSlice {
 		if chatterBox.BadWords.Find(word) {

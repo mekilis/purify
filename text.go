@@ -1,10 +1,8 @@
-package purifyutil
+package purify
 
 import (
 	"strings"
 	"sync"
-
-	"github.com/mekilis/purify/pkg/structures"
 )
 
 // Regex matches basic patterns to the possibly intended runes
@@ -25,8 +23,8 @@ func init() {
 	}
 }
 
-// Clean sanitizes a given text based on a passed trie of bad words
-func Clean(trie *structures.Trie, words string) string {
+// CleanText sanitizes a given text based on a passed trie of bad words
+func CleanText(trie *Trie, words string) string {
 	wordsSlice := strings.Split(words, " ")
 	wordsDone := make([]bool, len(wordsSlice))
 	var mutex = &sync.Mutex{}

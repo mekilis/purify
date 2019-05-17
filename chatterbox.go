@@ -1,11 +1,9 @@
-package chatterbox
+package purify
 
 import (
 	"log"
 	"math/rand"
 	"time"
-
-	"github.com/mekilis/purify/pkg/structures"
 )
 
 func init() {
@@ -18,20 +16,20 @@ const pathToSystemDictionary = "/usr/share/dict/words"
 type ChatterBox struct {
 	NumberOfWords  int
 	Words          []string
-	BadWords       *structures.Trie
+	BadWords       *Trie
 	VocabularySize int
 }
 
-// New returns a new ChatterBox object
-func New(clean bool) *ChatterBox {
-	badWordsTrie := structures.NewTrie()
-	words, err := structures.ParseDictionary(pathToSystemDictionary)
+// NewChatterbox returns a new ChatterBox object
+func NewChatterbox(clean bool) *ChatterBox {
+	badWordsTrie := NewTrie()
+	words, err := ParseDictionary(pathToSystemDictionary)
 	if err != nil {
 		log.Fatal("an error occurred while parsing dictionary:", err)
 	}
 
 	if !clean {
-		badWords, err := structures.ParseDictionary()
+		badWords, err := ParseDictionary()
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -1,4 +1,4 @@
-package chatterbox
+package purify
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 
 func TestRant(t *testing.T) {
 	cleanSpeech := false
-	chatterBox := New(cleanSpeech)
+	chatterBox := NewChatterbox(cleanSpeech)
 	chatterBox.NumberOfWords = 1 + rand.Int()%5
 	rant := chatterBox.Rant()
 	if rant == "" {
