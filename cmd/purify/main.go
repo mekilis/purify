@@ -40,12 +40,12 @@ func init() {
 	optCurrentVersion = getopt.BoolLong("version", 'v', "prints current version of Purify")
 	optHelp = getopt.BoolLong("help", 'h', "show help")
 	getopt.SetUsage(func() {
-		fmt.Println("Purify server: A minimalistic word filter based on Go." +
-			"\nUsage: ./purify [<flags>]" +
-			"\nFlags:" +
-			"\t ./purify -p (or --port) 9002" +
-			"\t ./purify -v (or --version)" +
-			"\t ./purify -h (or --help)")
+		fmt.Println("Purify server\n\nA simple word filter API written in Go." +
+			"\n\nUsage:\n\tpurify [options]" +
+			"\n\nOptions:" +
+			"\n\t-p <number>,\t--port <number>" +
+			"\n\t-v,\t\t--version" +
+			"\n\t-h,\t\t--help")
 	})
 }
 
