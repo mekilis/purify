@@ -12,17 +12,18 @@ type Dict struct {
 	Value *Trie
 }
 
-const pathToBadWords = "/mnt/data/purify/bad.txt"
+const pathToWords = "data/bad.txt"
 
 var (
 	errFileNotFound = errors.New("file could not be opened")
-	errScanningFile = errors.New("an error occured while scanning")
+	errScanningFile = errors.New("an error occurred while scanning")
 )
 
-// ParseDictionary returns a slice containing either good or bad words
+// ParseDictionary returns a slice containing either good or bad words. Defaults to bad words
+// if no argument is specified.
 func ParseDictionary(path ...string) ([]string, error) {
 	words := make([]string, 0)
-	p := pathToBadWords
+	p := pathToWords
 	if len(path) > 0 {
 		p = path[0]
 	}
