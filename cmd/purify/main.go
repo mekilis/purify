@@ -131,7 +131,7 @@ func rootHandler(t *purify.Trie) http.HandlerFunc {
 			return
 		}
 
-		response.Message = purify.CleanText(t, request.Message)
+		response.Message = purify.Filter(t, request.Message)
 		response.StatusCode = 1
 		response.Status = "successfully filtered"
 		w.WriteHeader(http.StatusOK)
