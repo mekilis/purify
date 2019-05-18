@@ -1,4 +1,4 @@
-package structures
+package purify
 
 import (
 	"testing"
@@ -12,16 +12,8 @@ func TestParseDictionary(t *testing.T) {
 	}
 
 	// file 404
-	_, err = ParseDictionary("/mnt/data/purify/fakelist.txt")
+	_, err = ParseDictionary("data/fakelist.txt")
 	if err != errFileNotFound {
 		t.Errorf("parseDictionary(...): got %s, wanted %s", err.Error(), errFileNotFound)
 	}
-
-	// invalid format
-	_, err = ParseDictionary("/mnt/data/purify/bad.txt")
-	// TODO: Find an actual error (!=)
-	if err == errScanningFile {
-		t.Errorf("parseDictionary(...): got %v, wanted %s", err, errScanningFile)
-	}
-
 }

@@ -13,8 +13,7 @@ import (
 	"github.com/fatih/color"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/mekilis/purify/pkg/purifyutil"
-	"github.com/mekilis/purify/pkg/structures"
+	"github.com/mekilis/purify"
 	"github.com/pborman/getopt"
 )
 
@@ -41,12 +40,12 @@ func init() {
 	optCurrentVersion = getopt.BoolLong("version", 'v', "prints current version of Purify")
 	optHelp = getopt.BoolLong("help", 'h', "show help")
 	getopt.SetUsage(func() {
-		fmt.Println("Purify server: A minimalistic word filter based on Go." +
-			"\nUsage: ./purify [<flags>]" +
-			"\nFlags:" +
-			"\t ./purify -p (or --port) 9002" +
-			"\t ./purify -v (or --version)" +
-			"\t ./purify -h (or --help)")
+		fmt.Println("Purify server\n\nA simple word filter API written in Go." +
+			"\n\nUsage:\n\tpurify [options]" +
+			"\n\nOptions:" +
+			"\n\t-p <number>,\t--port <number>" +
+			"\n\t-v,\t\t--version" +
+			"\n\t-h,\t\t--help")
 	})
 }
 
@@ -78,7 +77,7 @@ func main() {
 	color.Set(color.FgYellow)
 	log.Print("Starting purify...\t")
 
-	badWords, err := structures.ParseDictionary()
+	badWords, err := purify.ParseDictionary()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -88,7 +87,7 @@ func main() {
 	log.Print("Setting up trie...\t")
 	color.Unset()
 
-	trie := structures.NewTrie()
+	trie := purify.NewTrie()
 
 	for _, word := range badWords {
 		err = trie.AddWord(word)
@@ -113,7 +112,7 @@ func main() {
 	start(trie)
 }
 
-func rootHandler(t *structures.Trie) http.HandlerFunc {
+func rootHandler(t *purify.Trie) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var request Request
 		var response = Response{
@@ -132,7 +131,7 @@ func rootHandler(t *structures.Trie) http.HandlerFunc {
 			return
 		}
 
-		response.Message = purifyutil.Clean(t, request.Message)
+		response.Message = purify.Filter(t, request.Message)
 		response.StatusCode = 1
 		response.Status = "successfully filtered"
 		w.WriteHeader(http.StatusOK)
@@ -140,7 +139,7 @@ func rootHandler(t *structures.Trie) http.HandlerFunc {
 	}
 }
 
-func start(t *structures.Trie) {
+func start(t *purify.Trie) {
 	r := chi.NewRouter()
 	// r.Use(middleware.Logger)
 	r.Use(middleware.Timeout(20 * time.Second))
