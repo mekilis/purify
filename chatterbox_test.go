@@ -1,7 +1,6 @@
 package purify
 
 import (
-	"fmt"
 	"math/rand"
 	"testing"
 )
@@ -14,6 +13,4 @@ func TestRant(t *testing.T) {
 	if rant == "" {
 		t.Error("chatterBox is suddenly mute")
 	}
-
-	fmt.Println(rant)
 }
